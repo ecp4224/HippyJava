@@ -21,7 +21,7 @@ public class Room {
     public static Room createRoom(String name, MultiUserChat chat, XMPPConnection con) {
         final Room r = new Room(name, chat);
         try {
-            r.info = MultiUserChat.getRoomInfo(con, name + "@" + CONF_URL);
+            r.info = MultiUserChat.getRoomInfo(con, (name.indexOf("@") != -1 ? name : name + "@" + CONF_URL));
         } catch (XMPPException e) {
             e.printStackTrace();
         }
@@ -91,7 +91,7 @@ public class Room {
      * @return
      */
     public String getXMPP_JID() {
-        return name + "@" + CONF_URL;
+        return (name.indexOf("@") != -1 ? name : name + "@" + CONF_URL);
     }
     
     /**

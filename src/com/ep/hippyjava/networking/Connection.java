@@ -57,7 +57,15 @@ public final class Connection implements MessageListener, ConnectionListener {
     public void joinRoom(String APIKey, String room, String nickname) throws XMPPException {
         if (!connected || nickname.equals("") || password.equals("") || rooms.containsKey(room))
             return;
-        MultiUserChat muc2 = new MultiUserChat(XMPP, room + "@" + CONF_URL);
+        MultiUserChat muc2;
+        if (!isJID(room)) {
+            Room temp = Room.createRoom(APIKey, room);
+            room = temp.getHipchatRoomInfo(APIKey).getJID();
+            muc2 = new MultiUserChat(XMPP, room);
+            temp = null;
+        }
+        else
+            muc2 = new MultiUserChat(XMPP, (room.indexOf("@") != -1 ? room : room + "@" + CONF_URL));
         muc2.join(nickname, password);
         final Room obj = Room.createRoom(APIKey, room, muc2, XMPP);
         muc2.addMessageListener(new PacketListener() {
@@ -154,6 +162,15 @@ public final class Connection implements MessageListener, ConnectionListener {
             if (!connected)
                 break;
             super.wait(0L);
+        }
+    }
+    
+    private boolean isJID(String name) {
+        try {
+            Integer.parseInt(name.split("\\_")[0]);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
     
