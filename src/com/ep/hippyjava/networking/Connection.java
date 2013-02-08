@@ -55,11 +55,15 @@ public final class Connection implements MessageListener, ConnectionListener {
     }
     
     public void joinRoom(String room, String nickname) throws XMPPException {
+        joinRoom("", room, nickname);
+    }
+    
+    public void joinRoom(String APIKey, String room, String nickname) throws XMPPException {
         if (!connected || nickname.equals("") || password.equals("") || rooms.containsKey(room))
             return;
         MultiUserChat muc2 = new MultiUserChat(XMPP, room + "@" + CONF_URL);
         muc2.join(nickname, password);
-        final Room obj = new Room(room, muc2, XMPP);
+        final Room obj = Room.createRoom(APIKey, room, muc2, XMPP);
         muc2.addMessageListener(new PacketListener() {
 
             @Override
@@ -99,7 +103,7 @@ public final class Connection implements MessageListener, ConnectionListener {
     
     public Room findConnectedRoom(String name) {
         for (Room r : getRooms()) {
-            if (r.getName().equals(name))
+            if (r.getXMPPName().equals(name))
                 return r;
         }
         return null;
@@ -118,7 +122,6 @@ public final class Connection implements MessageListener, ConnectionListener {
     
     @Override
     public void processMessage(Chat arg0, Message arg1) {
-        //TODO Eventhandlers
         MessageRecivedEvent event = new MessageRecivedEvent(null, arg1);
         HippyJava.events.callEvent(event);
     }
