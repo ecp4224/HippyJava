@@ -30,10 +30,6 @@ import com.ep.hippyjava.eventsystem.events.MessageRecivedEvent;
 public final class Connection implements MessageListener, ConnectionListener {
     
     private static final ConnectionConfiguration CONNECTION_CONFIG = new ConnectionConfiguration(XMPP_URL, PORT);
-    static {
-       // CONNECTION_CONFIG.setSecurityMode(ConnectionConfiguration.SecurityMode.enabled);
-        //CONNECTION_CONFIG.setSocketFactory(new DummySSLSocketFactory());
-    }
     private final XMPPConnection XMPP = new XMPPConnection(CONNECTION_CONFIG);
     private boolean connected;
     private String password;
