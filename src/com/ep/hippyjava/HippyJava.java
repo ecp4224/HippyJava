@@ -15,9 +15,16 @@ import com.ep.hippyjava.utils.NotificationColor;
 import com.ep.hippyjava.utils.NotificationType;
 
 public class HippyJava {
-    
+
     public static final EventSystem events = new EventSystem();
-    
+
+    /**
+     * Run the bot specified in the parameter. This will have the bot connect and login into
+     * hipchat. This method will also invoke the {@link Bot#onLoad()} method for the bot. </br>
+     * <b>This method will block until the bot has been disconnected from the server</b>
+     * @param bot
+     *           The bot to run.
+     */
     public void run(Bot bot) {
         Connection con = new Connection();
         bot.run(con);
@@ -27,11 +34,50 @@ public class HippyJava {
             e.printStackTrace();
         }
     }
-    
+
+    /**
+     * Run the bot specified in the parameter in a separate thread. This method will have the bot connect and
+     * login into hipchat. This method will also invoke the {@link Bot#onLoad()} method for the bot. The thread running
+     * this bot will be returned.
+     * @param bot
+     *           The bot to run
+     * @return
+     *        The tread object running this bot
+     */
+    public Thread runBotDysync(final Bot bot) {
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                HippyJava.this.run(bot);
+            }
+        };
+        return t;
+    }
+
+    /**
+     * Run the bot specified in the parameter. This will have the bot connect and login into the
+     * hipchat. This method will also invoke the {@link Bot#onLoad()} method for the bot. </br>
+     * <b>This method will block until the bot has been disconnected from the server</b>
+     * @param bot
+     *           The bot to run.
+     */
     public static void runBot(Bot bot) {
         new HippyJava().run(bot);
     }
-    
+
+    /**
+     * Run the bot specified in the parameter in a separate thread. This method will have the bot connect and
+     * login into hipchat. This method will also invoke the {@link Bot#onLoad()} method for the bot. The thread running
+     * this bot will be returned.
+     * @param bot
+     *           The bot to run
+     * @return
+     *        The tread object running this bot
+     */
+    public static Thread runBotDesync(Bot bot) {
+        return new HippyJava().runBotDysync(bot);
+    }
+
     /**
      * Send a hipchat notification to the room specified. You may use HTML if the {@link NotificationType} in the param is
      * set to {@link NotificationType#HTML}. </br>
@@ -78,6 +124,6 @@ public class HippyJava {
         while ((line = read.readLine()) != null)
             builder.append(line);
         read.close();
-       return builder.toString();
+        return builder.toString();
     }
 }

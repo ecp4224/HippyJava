@@ -7,7 +7,6 @@ public class MyTestBot extends HippyBot {
 
     @Override
     public void recieveMessage(String message, String from, Room room) {
-        if 
     }
 
     @Override

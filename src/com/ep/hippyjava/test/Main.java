@@ -5,7 +5,7 @@ import com.ep.hippyjava.HippyJava;
 public class Main {
     
     public static void main(String[] args) {
-        HippyJava.runBot(new MyTestBot());
+        HippyJava.runBotDesync(new MyTestBot());
     }
 
 }

@@ -2,6 +2,7 @@
 .classpath
 .project
 bin/*
+libs/*
 
 # Package Files #
 *.war
