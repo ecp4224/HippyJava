@@ -26,6 +26,7 @@ import org.jivesoftware.smackx.muc.MultiUserChat;
 
 import com.ep.hippyjava.HippyJava;
 import com.ep.hippyjava.eventsystem.events.MessageRecivedEvent;
+import com.ep.hippyjava.model.Room;
 
 public final class Connection implements MessageListener, ConnectionListener {
     
@@ -34,6 +35,7 @@ public final class Connection implements MessageListener, ConnectionListener {
     private boolean connected;
     private String password;
     private HashMap<Room, MultiUserChat> rooms = new HashMap<Room, MultiUserChat>();
+    private HashMap<String, Chat> cache = new HashMap<String, Chat>();
     
     public void connect() throws XMPPException {
         if (connected)
@@ -48,6 +50,17 @@ public final class Connection implements MessageListener, ConnectionListener {
             return;
         XMPP.login(username, password);
         this.password = password;
+    }
+    
+    public void sendPM(String message, String to) throws XMPPException {
+        Chat c;
+        if (cache.containsKey(to))
+            c = cache.get(to);
+        else {
+            c = XMPP.getChatManager().createChat(to, this);
+            cache.put(to, c);
+        }
+        c.sendMessage(message);
     }
     
     public void joinRoom(String room, String nickname) throws XMPPException {
@@ -111,6 +124,10 @@ public final class Connection implements MessageListener, ConnectionListener {
                 return r;
         }
         return null;
+    }
+    
+    public boolean isConnected() {
+        return connected;
     }
     
     public void disconnect() {

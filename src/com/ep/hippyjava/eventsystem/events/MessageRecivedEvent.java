@@ -3,7 +3,7 @@ package com.ep.hippyjava.eventsystem.events;
 import org.jivesoftware.smack.packet.Message;
 
 import com.ep.hippyjava.eventsystem.EventList;
-import com.ep.hippyjava.networking.Room;
+import com.ep.hippyjava.model.Room;
 
 public class MessageRecivedEvent extends RoomEvent {
 
@@ -38,7 +38,7 @@ public class MessageRecivedEvent extends RoomEvent {
     }
     
     /**
-     * Get the message object that holds the XMPP data for this message.
+     * Get the message object that holds the XMPP users for this message.
      * @return
      */
     public Message getMessage() {

@@ -1,7 +1,7 @@
 package com.ep.hippyjava.eventsystem.events;
 
 import com.ep.hippyjava.eventsystem.Event;
-import com.ep.hippyjava.networking.Room;
+import com.ep.hippyjava.model.Room;
 
 public abstract class RoomEvent extends Event {
     

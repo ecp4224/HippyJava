@@ -2,8 +2,9 @@ package com.ep.hippyjava.bot;
 
 import java.util.List;
 
+import com.ep.hippyjava.model.HipchatUser;
+import com.ep.hippyjava.model.Room;
 import com.ep.hippyjava.networking.Connection;
-import com.ep.hippyjava.networking.Room;
 
 public interface Bot {
     
@@ -54,10 +55,10 @@ public interface Bot {
     public Room getSelectedRoom();
     
     /**
-     * Get an unmodifiable list of users.
+     * Get an unmodifiable list of {@link HipchatUser}'s. These users may be offline, online, or may be deleted.
      * @return
      */
-    public List<String> users();
+    public List<HipchatUser> getUsers();
     
     /**
      * The username this bot will login into the server with.

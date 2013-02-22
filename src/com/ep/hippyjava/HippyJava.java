@@ -9,8 +9,8 @@ import java.net.URL;
 
 import com.ep.hippyjava.bot.Bot;
 import com.ep.hippyjava.eventsystem.EventSystem;
+import com.ep.hippyjava.model.Room;
 import com.ep.hippyjava.networking.Connection;
-import com.ep.hippyjava.networking.Room;
 import com.ep.hippyjava.utils.NotificationColor;
 import com.ep.hippyjava.utils.NotificationType;
 

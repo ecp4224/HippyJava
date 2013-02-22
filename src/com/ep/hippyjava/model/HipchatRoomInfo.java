@@ -1,10 +1,10 @@
-package com.ep.hippyjava.utils;
+package com.ep.hippyjava.model;
 
 import static com.ep.hippyjava.utils.Constants.GSON;
 
 import java.util.Date;
 
-import com.ep.hippyjava.networking.Room;
+import com.ep.hippyjava.utils.WebUtils;
 
 public class HipchatRoomInfo {
     private int room_id;
@@ -21,7 +21,7 @@ public class HipchatRoomInfo {
     public static HipchatRoomInfo getInfo(String APIKey, Room room) {
         if (APIKey.equals(""))
             return null;
-        HipchatRoomInfo[] data = getRooms(APIKey).rooms;
+        HipchatRoomInfo[] data = getRooms(APIKey);
         if (data == null)
             return null;
         for (HipchatRoomInfo h : data) {
@@ -31,14 +31,20 @@ public class HipchatRoomInfo {
         return null;
     }
     
-    public static RoomHolder getRooms(String APIKey) {
+    public static HipchatRoomInfo[] getRooms(String APIKey) {
+        return getRoomHolder(APIKey).rooms;
+    }
+    
+    private static RoomHolder getRoomHolder(String APIKey) {
         try {
             String JSON = WebUtils.getTextAsString("https://api.hipchat.com/v1/rooms/list?auth_token=" + APIKey);
             RoomHolder data = GSON.fromJson(JSON, RoomHolder.class);
             return data;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            RoomHolder r = new RoomHolder();
+            r.rooms = new HipchatRoomInfo[0];
+            return r;
         }
     }
     
@@ -82,7 +88,7 @@ public class HipchatRoomInfo {
     public boolean equals(Object obj) {
         if (obj instanceof Room) {
             Room r = (Room)obj;
-            if ((r.getXMPPName() + "@" + Constants.CONF_URL).equals(xmpp_jid))
+            if (r.getXMPP_JID().equals(xmpp_jid))
                 return true;
             else if (r.getXMPPName().equals(name)) //In some cases, the XMPPName turns out to be the true name :/
                 return true;
@@ -96,8 +102,8 @@ public class HipchatRoomInfo {
         return false;
     }
     
-    private class RoomHolder {
+    private static class RoomHolder {
         HipchatRoomInfo[] rooms;
-        private RoomHolder() { }
+        public RoomHolder() { }
     }
 }

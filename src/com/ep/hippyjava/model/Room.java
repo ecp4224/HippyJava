@@ -1,6 +1,11 @@
-package com.ep.hippyjava.networking;
+package com.ep.hippyjava.model;
 
 import static com.ep.hippyjava.utils.Constants.CONF_URL;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -8,7 +13,6 @@ import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.RoomInfo;
 import org.jivesoftware.smackx.muc.SubjectUpdatedListener;
 
-import com.ep.hippyjava.utils.HipchatRoomInfo;
 
 public class Room {
     
@@ -64,9 +68,9 @@ public class Room {
      * @return
      */
     public int getUserCount() {
-        if (info == null)
+        if (!isConnected())
             return -1;
-        return info.getOccupantsCount();
+        return chat.getOccupantsCount();
     }
     
     /**
@@ -83,7 +87,7 @@ public class Room {
      * @return
      */
     public String getXMPPName() {
-        return name;
+        return (name.indexOf("@") != -1 ? name.split("\\@")[0] : name);
     }
     
     /**
@@ -178,6 +182,14 @@ public class Room {
             return false;
         }
         return true;
+    }
+    
+    public List<String> getConnectedUsers() {
+        Iterator<String> temp = chat.getOccupants();
+        List<String> copy = new ArrayList<String>();
+        while (temp.hasNext())
+            copy.add(temp.next());
+        return Collections.unmodifiableList(copy);
     }
     
     /**

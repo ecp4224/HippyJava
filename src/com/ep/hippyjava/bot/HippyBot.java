@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.XMPPException;
 
@@ -18,8 +17,9 @@ import com.ep.hippyjava.HippyJava;
 import com.ep.hippyjava.eventsystem.EventHandler;
 import com.ep.hippyjava.eventsystem.Listener;
 import com.ep.hippyjava.eventsystem.events.MessageRecivedEvent;
+import com.ep.hippyjava.model.HipchatUser;
+import com.ep.hippyjava.model.Room;
 import com.ep.hippyjava.networking.Connection;
-import com.ep.hippyjava.networking.Room;
 import com.ep.hippyjava.utils.NotificationColor;
 import com.ep.hippyjava.utils.NotificationType;
 
@@ -112,19 +112,101 @@ public abstract class HippyBot implements Bot, Listener {
         if (findRoom(name) != null)
             sendMessage(message, findRoom(name));
     }
+    
+    /**
+     * Send a private message to someone. The parameter "to" must be the JID URL of the user, you can convert a nick such as
+     * "Bob Joe" to a JID URL by invoking the method {@link HippyBot#nickToJID(String)} and using the String returned as the
+     * JID URL.
+     * @param message
+     *              The message to send.
+     * @param to
+     *          The JID of the user to send this message to.
+     * @return
+     *        Whether this operation was successful or not.
+     */
+    public boolean sendPM(String message, String to) {
+        if (to.indexOf("@") == -1) { //oh noes its not a JID! The user didnt follow the rules!
+            to = nickToJID(to);
+            if (to.indexOf("@") == -1) //Ok I just dont know anymore
+                return false;
+        }
+        try {
+            getConnection().sendPM(message, to);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Send a private message to someone.
+     * @param message
+     *              The message to send.
+     * @param to
+     *          The user to send the message to.
+     * @return
+     *        Whether this operation was successful or not.
+     */
+    public boolean sendPM(String message, HipchatUser user) {
+        return sendPM(message, nickToJID(user.getName()));
+    }
+    
+    /**
+     * Convert a hipchat nick to its JID equal. </br>
+     * <b>For Example:</b> </br>
+     * Pass "Bob Joe" as a parameter and this method will return something like "11111_111111@chat.hipchat.com".
+     * If the method can't find the JID for the nick given, then the given nick will be returned.
+     * @param nick
+     *            The nick to convert
+     * @return
+     *        The JID for the nick
+     */
+    public String nickToJID(String nick) {
+        for (RosterEntry r : getConnection().getRoster().getEntries()) {
+            if (r.getName().equals(nick))
+                return r.getUser();
+        }
+        return nick;
+    }
 
     @Override
     public void sendMessage(String message, Room room) {
         room.sendMessage(message, nickname());
     }
 
+    /**
+     * Get an unmodifiable list of {@link HipchatUser}'s. These users may be offline, online, or may be deleted. </br>
+     * In order for this method to work properly, the {@link HippyBot#apiKey()} method must return a valid API Key, otherwise this method will
+     * return an empty list.
+     * @return
+     */
     @Override
-    public List<String> users() {
-        final Roster r = con.getRoster();
-        ArrayList<String> users = new ArrayList<String>();
-        for (RosterEntry e : r.getEntries())
-            users.add(e.getName());
-                return Collections.unmodifiableList(users);
+    public List<HipchatUser> getUsers() {
+        ArrayList<HipchatUser> users = new ArrayList<HipchatUser>();
+        if (apiKey().equals(""))
+            return Collections.unmodifiableList(users);
+        HipchatUser[] u = HipchatUser.getHipchatUsers(apiKey());
+        for (HipchatUser user : u) {
+            users.add(user);
+        }
+        return Collections.unmodifiableList(users);
+    }
+    
+    /**
+     * Find a HipchatUser by providing a name.
+     * This wont check for part of the name and this search is also case sensitive. So "Bob Joe" and "bob joe" will return different results.
+     * @param name
+     *            The name to search for.
+     * @return
+     *        The HipchatUser object or null if none is found.
+     */
+    public HipchatUser findUser(String name) {
+        for (HipchatUser u : getUsers()) {
+            if (u.getName().equals(name))
+                return u;
+        }
+        return null;
     }
 
     /**
