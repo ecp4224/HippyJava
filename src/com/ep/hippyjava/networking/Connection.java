@@ -25,7 +25,7 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 
 import com.ep.hippyjava.HippyJava;
-import com.ep.hippyjava.eventsystem.events.MessageRecivedEvent;
+import com.ep.hippyjava.eventsystem.events.model.MessageRecivedEvent;
 import com.ep.hippyjava.model.Room;
 
 public final class Connection implements MessageListener, ConnectionListener {

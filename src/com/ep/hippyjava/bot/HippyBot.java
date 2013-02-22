@@ -16,7 +16,7 @@ import org.jivesoftware.smack.XMPPException;
 import com.ep.hippyjava.HippyJava;
 import com.ep.hippyjava.eventsystem.EventHandler;
 import com.ep.hippyjava.eventsystem.Listener;
-import com.ep.hippyjava.eventsystem.events.MessageRecivedEvent;
+import com.ep.hippyjava.eventsystem.events.model.MessageRecivedEvent;
 import com.ep.hippyjava.model.HipchatUser;
 import com.ep.hippyjava.model.Room;
 import com.ep.hippyjava.networking.Connection;

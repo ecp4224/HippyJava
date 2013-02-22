@@ -13,6 +13,10 @@ import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.RoomInfo;
 import org.jivesoftware.smackx.muc.SubjectUpdatedListener;
 
+import com.ep.hippyjava.HippyJava;
+import com.ep.hippyjava.eventsystem.events.model.UserJoinedRoomEvent;
+import com.ep.hippyjava.eventsystem.events.model.UserLeftRoomEvent;
+
 
 public class Room {
     
@@ -21,6 +25,11 @@ public class Room {
     private String subject;
     private String name;
     private HipchatRoomInfo hinfo;
+    private ArrayList<String> users = new ArrayList<String>();
+    private int lastcount;
+    private String api_cache;
+    private Thread joinchecker;
+    private boolean halt;
     
     public static Room createRoom(String name, MultiUserChat chat, XMPPConnection con) {
         final Room r = new Room(name, chat);
@@ -35,6 +44,7 @@ public class Room {
                 r.subject = newsubject;
             }
         });
+        r.startThread();
         return r;
     }
     
@@ -42,6 +52,7 @@ public class Room {
         Room r = createRoom(name, chat, con);
         if (APIKey != null && !APIKey.equals(""))
             r.hinfo = HipchatRoomInfo.getInfo(APIKey, r);
+        r.api_cache = APIKey;
         return r;
     }
     
@@ -49,6 +60,7 @@ public class Room {
         Room r = new Room(name);
         r.hinfo = HipchatRoomInfo.getInfo(APIKey, r);
         r.subject = r.hinfo.getTopic();
+        r.api_cache = APIKey;
         return r;
     }
     
@@ -59,6 +71,26 @@ public class Room {
     
     private Room(String name) {
         this.name = name;
+    }
+    
+    private void startThread() {
+        joinchecker = new JoinLookout();
+        joinchecker.start();
+    }
+    
+    private void stopThread() {
+        halt = true;
+        joinchecker.interrupt();
+        try {
+            joinchecker.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void disconnect() {
+        stopThread();
+        //TODO Disconnect
     }
     
     /**
@@ -211,6 +243,56 @@ public class Room {
             e.printStackTrace();
         }
         return false;
+    }
+    
+    private class JoinLookout extends Thread {
+        
+        @Override
+        public void run() {
+            ArrayList<String> toremove = new ArrayList<String>();
+            while (isConnected()) {
+                    toremove.clear();
+                    if (halt)
+                        continue;
+                    if (getUserCount() != lastcount) {
+                        List<String> connected = getConnectedUsers();
+                        for (String nick : connected) {
+                            if (!users.contains(nick)) { //connected
+                                HipchatUser user = null;
+                                if (api_cache != null && !api_cache.equals(""))
+                                    user = HipchatUser.createInstance(nick.split("\\/")[1], api_cache);
+                                users.add(nick);
+                                lastcount = getUserCount();
+                                UserJoinedRoomEvent event = new UserJoinedRoomEvent(Room.this, user, nick);
+                                HippyJava.events.callEvent(event);
+                            }
+                        }
+
+                        for (String nick : users) {
+                            if (!connected.contains(nick)) { //disconnected
+                                HipchatUser user = null;
+                                if (api_cache != null && !api_cache.equals(""))
+                                    user = HipchatUser.createInstance(nick.split("\\/")[1], api_cache);
+                                toremove.add(nick);
+                                lastcount = getUserCount();
+                                UserLeftRoomEvent event = new UserLeftRoomEvent(Room.this, user, nick);
+                                HippyJava.events.callEvent(event);
+                            }
+                        }
+
+                        for (String nick : toremove) {
+                            users.remove(nick);
+                        }
+                    }
+
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                
+            }
+        }
     }
 
 }

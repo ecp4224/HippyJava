@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
@@ -23,6 +24,7 @@ public class HipchatUser {
     private int is_group_admin;
     private int is_deleted;
     private BufferedImage cache;
+    private static HashMap<String, HipchatUser> user_cache = new HashMap<String, HipchatUser>(); 
     
     /**
      * Return the HipchatUser object that has the name of <b>nick</b>
@@ -34,11 +36,19 @@ public class HipchatUser {
      *        The HipchatUser object with the given nick.
      */
     public static HipchatUser createInstance(String nick, String APIKey) {
-        HipchatUser[] users = getHipchatUsers(APIKey);
-        for (HipchatUser user : users) {
-            if (user.name.equals(nick))
-                return user;
+        if (!user_cache.containsKey(nick)) {
+            HipchatUser[] users = getHipchatUsers(APIKey);
+            for (HipchatUser user : users) {
+                if (!user_cache.containsKey(user.name))
+                    user_cache.put(user.name, user);
+            }
+            if (!user_cache.containsKey(nick))
+                return null;
+            else
+                return user_cache.get(nick);
         }
+        else
+            user_cache.get(nick);
         return null;
     }
     

@@ -1,8 +1,9 @@
-package com.ep.hippyjava.eventsystem.events;
+package com.ep.hippyjava.eventsystem.events.model;
 
 import org.jivesoftware.smack.packet.Message;
 
 import com.ep.hippyjava.eventsystem.EventList;
+import com.ep.hippyjava.eventsystem.events.RoomEvent;
 import com.ep.hippyjava.model.Room;
 
 public class MessageRecivedEvent extends RoomEvent {
