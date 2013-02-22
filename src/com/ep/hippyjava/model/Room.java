@@ -44,6 +44,9 @@ public class Room {
                 r.subject = newsubject;
             }
         });
+        for (String user : r.getConnectedUsers()) {
+            r.users.add(user);
+        }
         r.startThread();
         return r;
     }
