@@ -126,8 +126,10 @@ public abstract class HippyBot implements Bot, Listener {
      */
     public boolean sendPM(String message, String to) {
         if (to.indexOf("@") == -1) { //oh noes its not a JID! The user didnt follow the rules!
-            to = nickToJID(to);
-            if (to.indexOf("@") == -1) //Ok I just dont know anymore
+            HipchatUser user = findUser(to);
+            if (user != null)
+                to = nickToJID(user.getName());
+            else //Ok I just dont know anymore
                 return false;
         }
         try {
