@@ -1,4 +1,4 @@
-HippyJava
+HippyJava [![Build Status](https://drone.io/github.com/hypereddie10/HippyJava/status.png)](https://drone.io/github.com/hypereddie10/HippyJava/latest)
 =========
 
 HippyJava is a Java library for making bots for [HipChat][1]. It uses the [Smack API][2] to communicate with Hipchat's XMPP server and it also supports Hipchat's HTTP protocol.
