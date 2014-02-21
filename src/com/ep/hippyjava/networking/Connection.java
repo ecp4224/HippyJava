@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import com.ep.hippyjava.networking.exceptions.LoginException;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionListener;
@@ -45,10 +46,16 @@ public final class Connection implements MessageListener, ConnectionListener {
         connected = true;
     }
     
-    public void login(String username, String password) throws XMPPException {
+    public void login(String username, String password) throws LoginException {
         if (!connected)
             return;
-        XMPP.login(username, password);
+        if (!username.contains("hipchat.com"))
+            System.err.println("[HippyJava] The username being used does not look like a Jabber ID. Are you sure this is the correct username?");
+        try {
+            XMPP.login(username, password);
+        } catch (XMPPException exception) {
+            throw new LoginException("There was an error logging in! Are you using the correct username/password?", exception);
+        }
         this.password = password;
     }
     
