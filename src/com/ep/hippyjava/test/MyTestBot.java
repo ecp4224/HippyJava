@@ -8,7 +8,7 @@ import com.ep.hippyjava.model.Room;
 public class MyTestBot extends HippyBot {
 
     @Override
-    public void recieveMessage(String message, String from, Room room) {
+    public void receiveMessage(String message, String from, Room room) {
         System.out.println(from + "(" + room.getTrueName() + ")" + ": " + message);
     }
 

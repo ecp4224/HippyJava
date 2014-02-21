@@ -11,7 +11,7 @@ public interface Bot {
     /**
      * This method is called whenever a message is received
      */
-    public void recieveMessage(String message, String from, Room room);
+    public void receiveMessage(String message, String from, Room room);
     
     /**
      * This method is called after the bot connects and logins.

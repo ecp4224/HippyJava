@@ -34,7 +34,7 @@ public abstract class HippyBot implements Bot, Listener {
             @SuppressWarnings("unused")
             @EventHandler
             public void messageEvent(MessageRecivedEvent event) {
-                recieveMessage(event.body(), event.from(), event.getRoom());
+                receiveMessage(event.body(), event.from(), event.getRoom());
             }
         });
         this.con = con;
