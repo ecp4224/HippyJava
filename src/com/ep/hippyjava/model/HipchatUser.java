@@ -1,16 +1,10 @@
 package com.ep.hippyjava.model;
 
-import static com.ep.hippyjava.utils.Constants.GSON;
+import com.ep.hippyjava.utils.WebUtils;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 
-import javax.imageio.ImageIO;
-
-import com.ep.hippyjava.utils.WebUtils;
+import static com.ep.hippyjava.utils.Constants.GSON;
 
 public class HipchatUser {
     private int user_id;
@@ -23,7 +17,6 @@ public class HipchatUser {
     private String status_message;
     private int is_group_admin;
     private int is_deleted;
-    private BufferedImage cache;
     private static HashMap<String, HipchatUser> user_cache = new HashMap<String, HipchatUser>(); 
     
     /**
@@ -119,19 +112,6 @@ public class HipchatUser {
     
     public String getPhotoUrl() {
         return photo_url;
-    }
-    
-    public BufferedImage getProfilePhoto() {
-        if (cache == null) {
-            try {
-                cache = ImageIO.read(new URL(getPhotoUrl()));
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return cache;
     }
     
     public String getStatus() {
