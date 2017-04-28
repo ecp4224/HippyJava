@@ -5,6 +5,51 @@ HippyJava is a Java library for making bots for [HipChat][1]. It uses the [Smack
 
 Its easy to make a Hipchat bot in HippyJava!
 
+## Installation
+
+This package can be found the Boxtrot Studio maven repo. Add the following to your project's pom to add the repo
+
+```
+<repositories>
+    <repository>
+        <id>maven-central</id>
+        <url>http://central.maven.org/maven2</url>
+    </repository>
+    ....
+    <repository>
+        <id>boxtrotstudio-repo</id>
+        <url>https://repo.boxtrotstudio.com/maven</url>
+    </repository>
+</repositories>
+```
+
+or if you're using gradle
+
+```
+repositories {
+    mavenCentral()
+    maven { url "https://repo.boxtrotstudio.com/maven"}
+}
+```
+
+once the repo is added, you can simply install the package by adding the following to your project's pom file
+
+```
+<dependencies>
+    <dependency>
+        <groupId>com.ep.hippyjava</groupId>
+        <artifactId>HippyJava</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+</dependencies>
+```
+
+or if you're using gradle
+
+```
+compile 'com.ep.hippyjava:HippyJava:1.0.0-SNAPSHOT'
+```
+
 ##Current Features
 * Multi-room Chatting [XMPP]
 * Private Messaging [XMPP / HTTP]
