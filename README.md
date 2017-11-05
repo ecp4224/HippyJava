@@ -50,20 +50,20 @@ or if you're using gradle
 compile 'com.ep.hippyjava:HippyJava:1.0.0-SNAPSHOT'
 ```
 
-##Current Features
+## Current Features
 * Multi-room Chatting [XMPP]
 * Private Messaging [XMPP / HTTP]
 * Retrieving User Data [HTTP]
 * Notification Sending [HTTP]
 
-##Getting Started/How-To
+## Getting Started/How-To
 You can check out the [wiki][3] for tutorials/how-to's
 
-##Contributing
+## Contributing
 If you would like to contribute to this project, simply fork the repo and send a pull request.
 Please test your pull request and please try to keep your code neat.
 
-##Building the Source
+## Building the Source
 The source has a maven script for required dependencies, so just run 'mvn clean install' in the project folder.
 
 [1]: http://hipchat.com/
